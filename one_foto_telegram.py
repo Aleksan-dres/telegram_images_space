@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 def main():
     load_dotenv()
-    token = os.environ['telegram_TOKEN']
+    telegram_token = os.environ['telegram_TOKEN']
     
     bot = telegram.Bot(token)
         
