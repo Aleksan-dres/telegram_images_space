@@ -3,6 +3,7 @@ import os
 import random
 import telegram
 import time
+
 from dotenv import load_dotenv
 from PIL import Image
 
@@ -10,14 +11,14 @@ from PIL import Image
 def main():
 
     load_dotenv()
-    token = os.environ['telegram_TOKEN']
+    telegram_token = os.environ['telegram_TOKEN']
 
     parser = argparse.ArgumentParser(description="Загружает фото в телеграм канал через интервал времени")
     parser.add_argument('-interval', type=int, required=True, help='Укажите интервал времени через который будут публиковаться фотографии')
     args = parser.parse_args()
     interval = args.interval
 
-    bot = telegram.Bot(token=token)
+    bot = telegram.Bot(token=telegram_token)
     updates = bot.get_updates()
 
     while True:
