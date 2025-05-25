@@ -1,11 +1,15 @@
-import argparse
-import json
-import os
 import requests
+import json
+import os 
+import argparse 
+from file import made_file
 
- 
-if not os.path.exists("foto_space"):
-    os.mkdir("foto_space")
+def download_file(url, filename):
+    response = requests.get(url)
+    response.raise_for_status()
+    
+    with open(filename, 'wb') as foto_space:
+        foto_space.write(response.content)
 
 def fetch_spacex_last_launch(ID_space_x):
     response = requests.get(f"https://api.spacexdata.com/v5/launches/{ID_space_x}")
@@ -15,12 +19,9 @@ def fetch_spacex_last_launch(ID_space_x):
         print("Фотографии отсутствуют для данного запуска")
         return  
 
-    for i, v in enumerate(foto_x):
-        filename_1 = f"foto_space/spacex{i}.jpg"
-        response = requests.get(v)
-        response.raise_for_status()
-        with open(filename_1, 'wb') as foto_space:
-            foto_space.write(response.content)
+    for image, value in enumerate(foto_x):
+        filename_1 = f"foto_space/spacex{image}.jpg"
+        download_file(value, filename)
 
 def main(): 
     parser = argparse.ArgumentParser(description="Загружает фото компании SpaceX")
