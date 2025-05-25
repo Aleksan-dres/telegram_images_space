@@ -4,63 +4,70 @@ import json
 import os
 import requests
 from dotenv import load_dotenv
+from file import made_file
 
 
-if not os.path.exists("foto_space"):
-    os.mkdir("foto_space")
-foto_space = () 
+def download_file(url, filename, token):
 
-
-url_nasa_epic = "https://api.nasa.gov/EPIC/api/natural/date" 
-def image_nasa_epic(url_nasa_epic,nasa_token,date): 
-    payload = {
-        "date": date, 
-        "api_key": nasa_token 
-    }
-    response = requests.get(url_nasa_epic, params=payload) 
+    payload = {"api_key": token}
+    response = requests.get(url, params=payload)
     response.raise_for_status()
-    foto_epic = response.json() 
-    foto_epic_image = [] 
-    replacement = []  
-    for i,v in enumerate (foto_epic):
 
-        foto_epic_original = response.json()[i]['image'] 
-        foto_epic_image.append(foto_epic_original) 
-        foto_epic_date = response.json()[i]['date'] 
-        foto_epic_date_original = foto_epic_date.split(maxsplit=1)[0] 
-        replacement_original = foto_epic_date_original.replace("-","/") 
-        replacement.append(replacement_original)
-    
-    return  foto_epic_image, replacement
+    with open(filename, 'wb') as foto_space:
+        foto_space.write(response.content)
 
 
-def image_nasa_epic_day(nasa_token,foto_epic_image,replacement): 
-    payload = {  
+def download_image_nasa_epic(nasa_token, date):
+    url_nasa_epic = "https://api.nasa.gov/EPIC/api/natural/date"
+    payload = {
+        "date": date,
         "api_key": nasa_token
-    } 
-    for i in range(1,11):
-        url_nasa_day = f"https://api.nasa.gov/EPIC/archive/natural/{replacement[i]}/png/{foto_epic_image[i]}.png"
-        response = requests.get(url_nasa_day, params=payload)
-        response.raise_for_status()        
-    
-        filename = f"foto_space/space_epic{i}.png"
-      
-        with open(filename, 'wb') as foto_space:
-            foto_space.write(response.content)
+    }
+    response = requests.get(url_nasa_epic, params=payload)
+    response.raise_for_status()
+    foto_epic = response.json()
+    foto_epic_image = []
+    modified_data = []
+    for item in foto_epic:
+
+        foto_epic_original = item['image']
+        foto_epic_image.append(foto_epic_original)
+        foto_epic_date = item['date']
+        foto_epic_date_original = foto_epic_date.split(maxsplit=1)[0]
+        parsed_date = datetime.datetime.fromisoformat(foto_epic_date_original)
+        updated_data = f"{parsed_date:%Y/%m/%d}"
+        modified_data.append(updated_data)
+
+    return foto_epic_image, modified_data
 
 
-def main(): 
+def download_image_nasa_epic_day(nasa_token, foto_epic_image, modified_data):
+    payload = {
+        "api_key": nasa_token
+    }
+    quantily_images = 10
+    for images in range(quantily_images):
+        url_nasa_day = f"https://api.nasa.gov/EPIC/archive/natural/{modified_data[images]}/png/{foto_epic_image[images]}.png"
+
+        filename = f"foto_space/space_epic{images}.png"
+        download_file(url_nasa_day, filename, nasa_token)
+
+
+def main():
     load_dotenv()
-    nasa_token = os.environ["NASA_API"] 
+    nasa_token = os.environ["NASA_TOKEN"]
 
-    parser = argparse.ArgumentParser(description="Загружает фото планеты Земля из космоса")
-    parser.add_argument('-date', help='Введите дату(год(4 числа),месяц(2числа),день(2 числа))', default=datetime.datetime.now().strftime("%Y-%m-%d")) 
+    parser = argparse.ArgumentParser(
+        description="Загружает фото планеты Земля из космоса")
+    parser.add_argument('-date', help='Введите дату(год(4 числа),месяц(2числа),день(2 числа))',
+                        default=datetime.datetime.now().strftime("%Y-%m-%d"))
     args = parser.parse_args()
 
     date = args.date
-  
-    foto_epic_image,replacement = image_nasa_epic(url_nasa_epic,nasa_token,date)  
-    image_nasa_epic_day(nasa_token,foto_epic_image,replacement) 
-        
+
+    foto_epic_image, modified_data = download_image_nasa_epic(nasa_token, date)
+    download_image_nasa_epic_day(nasa_token, foto_epic_image, modified_data)
+
+
 if __name__ == '__main__':
-    main()  
+    main() 
