@@ -5,16 +5,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from urllib.parse import urlparse
-from file import made_file
-
- 
-def download_file(url, filename):
-    response = requests.get(url)
-    response.raise_for_status()
-    
-    with open(filename, 'wb') as foto_space:
-        foto_space.write(response.content)
-
+from download_and_save_NASA_image import download_file
 
 def download_image_nasa_every_day(nasa_token,initial_date,final_date): 
     url_nasa = "https://api.nasa.gov/planetary/apod" 
@@ -25,10 +16,10 @@ def download_image_nasa_every_day(nasa_token,initial_date,final_date):
     }
     response = requests.get(url_nasa, params=payload) 
     response.raise_for_status()
-    foto_every_day = response.json()  
+    foto_every_days = response.json()  
     
     
-    for value, image in enumerate(foto_every_day): 
+    for number, foto in enumerate(foto_every_day): 
         if not foto_every_day or 'media_type' not in image or image['media_type'] != 'image': 
             continue 
         foto_url = image["url"] 
@@ -39,9 +30,9 @@ def download_image_nasa_every_day(nasa_token,initial_date,final_date):
         if format_foto != ".jpg": 
             continue 
 
-        filename_1 = f"foto_space/nasa{value}.jpg"
+        nasa_image = f"foto_space/nasa{number}.jpg"
 
-        download_file(foto_url, filename_1)
+        download_file(foto_url, nasa_image)
 
 
 
@@ -64,4 +55,4 @@ def main():
     download_image_nasa_every_day(nasa_token, initial_date, final_date)  
         
 if __name__ == '__main__':
-    main() 
+    main()  
