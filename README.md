@@ -37,10 +37,10 @@ pip install -r requirements.txt
 Для примера выполните следующую команду в терминале:
 
 ```
-python fetch_spacex_image.py -ID_spaceX 61fc0224e0dc5662b76489ab
+python fetch_spacex_image.py -id_spacex 61fc0224e0dc5662b76489ab
 ```
- 
-![space_2](https://github.com/user-attachments/assets/e2c78523-33f2-436d-a91f-f6205fa85eb5) 
+  
+![space_8](https://github.com/user-attachments/assets/595ca463-41a5-4b38-8472-fa953046baa2)
 
 
 В папку `foto_space` сохранятся фотографии с запуска ракеты. 
@@ -51,11 +51,16 @@ python fetch_spacex_image.py -ID_spaceX 61fc0224e0dc5662b76489ab
 Пример кода: 
 
 ```
-python fetch_spacex_image.py -ID_spaceX latest
+python fetch_spacex_image.py -id_spacex latest
 ```
 
-![space_3](https://github.com/user-attachments/assets/b3ec869e-d37e-4b04-a1ae-191935a7f161)
+![space_9](https://github.com/user-attachments/assets/8b79a900-8f41-43b8-b875-5afa8c0c5af0)
+
 В данном случае остается только выводить значение всех запусков и искать при которых делали фотографии. 
+
+
+## download_and_save_fetch_spacex_image.py 
+Это вспомогательный файл к скрипту fetch_spacex_image.py который поможет вам произвести запрос к сайту и сохранить результат полученных данных от сайта. Файл не большой и понятный. 
 
 
 ## EPIC_image.py 
@@ -74,6 +79,10 @@ python EPIC_images.py -date 2025-04-22
 В папку `foto_space` сохранятся 10 фотографий Земли из космоса.  
 
 
+## download_and_save_Epic_images.py 
+Это вспомогательный файл к скрипту Epic_images.py который поможет вам произвести запрос к сайту и сохранить результат полученных данных от сайта. Файл не большой и понятный. 
+
+
 ## NASA_images.py 
 Это исполнительный файл который выполняет запрос к сайту NASA, где они выкладывают лучшее фото дня каждый день. Для получения этих фотографий необходимо указать период времени за который хотите их получить. 
 
@@ -88,7 +97,11 @@ python NASA_images.py -start 2025-02-21 -end 2025-03-21
 
 
 В папку `foto_space` сохранятся фотографии за указаный период. 
-Но бывает так, что фотографий меньше чем период который вы указали. Это связано с тем что на сайте не всегда выкладывают фотографию. Сильно не удивляться, такое бывает.   
+Но бывает так, что фотографий меньше чем период который вы указали. Это связано с тем что на сайте не всегда выкладывают фотографию. Сильно не удивляться, такое бывает. 
+
+
+## download_and_save_NASA_images.py 
+Это вспомогательный файл к скрипту NASA_images.py который поможет вам произвести запрос к сайту и сохранить результат полученных данных от сайта. Файл не большой и понятный. 
 
 
 ## one_foto_telegram.py 
