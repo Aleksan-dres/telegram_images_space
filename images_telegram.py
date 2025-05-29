@@ -8,6 +8,23 @@ from dotenv import load_dotenv
 from PIL import Image
 
 
+def optimize_photo(file_path): 
+    filename, file_extension = os.path.splitext(file_path) 
+    optimized_image = f"{filename}_optimized{file_extension}"
+
+    with Image.open(file_path, 'r') as source:
+        source.save(optimized_image, format='JPEG',quality=50, optimize=True, progressive=True)
+    
+    return optimized_image 
+
+def creating_list_of_file(folder_path): 
+    file_names = []
+    for file_name in os.listdir(folder_path):
+        full_path = os.path.join(folder_path, file_name)
+        if os.path.isfile(full_path):
+            file_names.append(full_path) 
+    return file_names
+
 def main():
 
     load_dotenv()
@@ -26,11 +43,7 @@ def main():
         megabytes = 1048576 
         photo_size = 20
         folder_path = 'foto_space'
-        file_names = []
-        for file_name in os.listdir(folder_path):
-            full_path = os.path.join(folder_path, file_name)
-            if os.path.isfile(full_path):
-                file_names.append(full_path)
+        file_names = creating_list_of_file(folder_path)
 
         random.shuffle(file_names)
 
@@ -38,13 +51,8 @@ def main():
         file_size = os.path.getsize(file_path)
         file_size_megabytes = file_size / megabytes
         if file_size_megabytes >= photo_size:
-            image_file = file_path
-            filename, file_extension = os.path.splitext(file_path) 
-            optimized_image = f"{filename}_optimized{file_extension}"
-
-            with Image.open(image_file, 'r') as source:
-                source.save(optimized_image, format='JPEG',quality=50, optimize=True, progressive=True)
-            upload_path = optimized_image
+            upload_path = optimize_photo(file_path) 
+            
         else:
             upload_path = file_path
         
