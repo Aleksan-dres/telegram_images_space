@@ -4,9 +4,9 @@ import json
 import os
 import requests
 from dotenv import load_dotenv
-from download_and_save_EPIC_images import download_file
+from download_and_save_EPIC_images import download_and_save_file
 
-def download_image_nasa_epic(nasa_token, date):
+def download_images_nasa_epic(nasa_token, date):
     url_nasa_epic = "https://api.nasa.gov/EPIC/api/natural/date"
     payload = {
         "date": date,
@@ -15,29 +15,30 @@ def download_image_nasa_epic(nasa_token, date):
     response = requests.get(url_nasa_epic, params=payload)
     response.raise_for_status()
     foto_epic = response.json()
-    foto_epic_images = []
-    image_data = []
+    epic_images = []
+    image_date = []
     for foto in foto_epic:
 
         foto_epic_original = foto['image']
-        foto_epic_images.append(foto_epic_original)
+        epic_images.append(foto_epic_original)
         foto_epic_date = foto['date']
         foto_epic_date_original = foto_epic_date.split(maxsplit=1)[0]
         parsed_date = datetime.datetime.fromisoformat(foto_epic_date_original)
-        updated_data = f"{parsed_date:%Y/%m/%d}"
-        image_data.append(updated_data)
+        updated_date = f"{parsed_date:%Y/%m/%d}"
+        image_date.append(updated_date)
 
-    return foto_epic_images, image_data
+    return epic_images, image_date
 
 
-def download_image_nasa_epic_day(nasa_token, foto_epic_images, image_data):
+def download_images_nasa_epic_day(nasa_token, epic_images, image_date):
     
     images_quantily = 10
-    for image in range(images_quantily):
-        url_nasa_day = f"https://api.nasa.gov/EPIC/archive/natural/{image_data[image]}/png/{foto_epic_images[image]}.png"
+    for photo in range(images_quantily):
+        url_nasa_day = f"https://api.nasa.gov/EPIC/archive/natural/{image_date[photo]}/png/{epic_images[photo]}.png"
 
-        epic_foto_space = f"foto_space/space_epic{image}.png"
-        download_file(url_nasa_day, epic_foto_space, nasa_token)
+        epic_foto_space = f"space_epic{photo}.png" 
+        path_to_file_with_photos = f"foto_space/{epic_foto_space}"
+        download_and_save_file(url_nasa_day, path_to_file_with_photos, nasa_token)
 
 
 def main():
@@ -52,8 +53,8 @@ def main():
 
     date = args.date
 
-    foto_epic_image, image_data = download_image_nasa_epic(nasa_token, date)
-    download_image_nasa_epic_day(nasa_token, foto_epic_image, image_data)
+    epic_images, image_date = download_images_nasa_epic(nasa_token, date)
+    download_images_nasa_epic_day(nasa_token, epic_images, image_date)
 
 
 if __name__ == '__main__':
