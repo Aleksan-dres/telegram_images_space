@@ -1,6 +1,4 @@
 .env
 .venv 
 file.py
-download_and_save_EPIC_images.py
-download_and_save_fetch_spacex_image.py 
-download_and_save_NASA_images.py
+
