@@ -2,7 +2,7 @@ import requests
 import json
 import os 
 import argparse 
-from download_and_save_fetch_spacex_image import download_and_save_file
+from download_and_save_images import download_and_save_file
 
 
 def fetch_spacex_last_launch(launch_spacex):
@@ -17,7 +17,7 @@ def fetch_spacex_last_launch(launch_spacex):
         spacex_image = f"spacex{image}.jpg" 
         path_to_file_with_photos = f"foto_space/{spacex_image}"
         
-        download_and_save_file(number, path_to_file_with_photos)
+        download_and_save_file(number, path_to_file_with_photos, None)
 
 def main(): 
     parser = argparse.ArgumentParser(description="Загружает фото компании SpaceX")
