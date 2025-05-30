@@ -5,7 +5,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from urllib.parse import urlparse
-from download_and_save_NASA_images import download_and_save_file
+from download_and_save_images import download_and_save_file
 
 def download_images_nasa_every_day(nasa_token,initial_date,final_date): 
     url_nasa = "https://api.nasa.gov/planetary/apod" 
@@ -16,24 +16,24 @@ def download_images_nasa_every_day(nasa_token,initial_date,final_date):
     }
     response = requests.get(url_nasa, params=payload) 
     response.raise_for_status()
-    fotos_every_day = response.json()  
+    every_day_fotos = response.json()  
     
     
-    for number, foto in enumerate(fotos_every_day): 
+    for number, foto in enumerate(every_day_fotos): 
         if 'media_type' not in foto or foto['media_type'] != 'image': 
             continue 
         foto_url = foto["url"] 
-        format_link = urlparse(foto_url) 
-        path_link = format_link.path
+        link_format = urlparse(foto_url) 
+        path_link = link_format.path
         splitext = os.path.splitext(path_link)
-        format_foto = splitext[1] 
-        if format_foto != ".jpg": 
+        foto_format = splitext[1] 
+        if foto_format != ".jpg": 
             continue 
 
         nasa_image = f"nasa{number}.jpg" 
         path_to_file_with_photos = f"foto_space/{nasa_image}"
 
-        download_and_save_file(foto_url, path_to_file_with_photos)
+        download_and_save_file(foto_url, path_to_file_with_photos,None)
 
 
 
@@ -56,4 +56,4 @@ def main():
     download_images_nasa_every_day(nasa_token, initial_date, final_date)  
         
 if __name__ == '__main__':
-    main() 
+    main()  
