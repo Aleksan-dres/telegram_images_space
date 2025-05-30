@@ -4,7 +4,7 @@ import json
 import os
 import requests
 from dotenv import load_dotenv
-from download_and_save_EPIC_images import download_and_save_file
+from download_and_save_images import download_and_save_file
 
 def download_images_nasa_epic(nasa_token, date):
     url_nasa_epic = "https://api.nasa.gov/EPIC/api/natural/date"
@@ -14,20 +14,20 @@ def download_images_nasa_epic(nasa_token, date):
     }
     response = requests.get(url_nasa_epic, params=payload)
     response.raise_for_status()
-    foto_epic = response.json()
+    epic_fotos = response.json()
     epic_images = []
-    image_date = []
-    for foto in foto_epic:
+    image_dates = []
+    for foto in epic_fotos:
 
-        foto_epic_original = foto['image']
-        epic_images.append(foto_epic_original)
-        foto_epic_date = foto['date']
-        foto_epic_date_original = foto_epic_date.split(maxsplit=1)[0]
+        epic_foto_original = foto['image']
+        epic_images.append(epic_foto_original)
+        epic_foto_date = foto['date']
+        epic_foto_date_original = epic_foto_date.split(maxsplit=1)[0]
         parsed_date = datetime.datetime.fromisoformat(foto_epic_date_original)
         updated_date = f"{parsed_date:%Y/%m/%d}"
         image_date.append(updated_date)
 
-    return epic_images, image_date
+    return epic_images, image_dates
 
 
 def download_images_nasa_epic_day(nasa_token, epic_images, image_date):
@@ -53,7 +53,7 @@ def main():
 
     date = args.date
 
-    epic_images, image_date = download_images_nasa_epic(nasa_token, date)
+    epic_images, image_dates = download_images_nasa_epic(nasa_token, date)
     download_images_nasa_epic_day(nasa_token, epic_images, image_date)
 
 
